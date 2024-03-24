@@ -1,3 +1,15 @@
+## Parse
+
+A JSON TEXT is a sequence of TOKENS separated by optional WHITESPACES.
+
+Tokens: 
+
+`[ ] { } : ,` and values of numbers, strings, null/true/false literals. 
+
+Whitespace characters: 
+
+space (0020), horizontal tab (0009), line feed (000A) and carriage return (000D)
+
 ## JSON value string type handling
 
 A JSON value string is a double-quoted sequence of unicode characters. 
