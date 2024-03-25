@@ -56,7 +56,9 @@ The formula return this value into A2:
 
 ### GeoJSON Example
 
-Lets say for some reason we need only the latitude values for all coordinates from a Polygon Feature (the second elements). The following GeoJSON FeatureCollection (source: OpenLayers.org) defines two Polygon Features:
+Lets say for some reason we need only the latitude values (the second elements) from all coordinates of a Polygon Feature. The following GeoJSON FeatureCollection (source: OpenLayers.org) defines two Polygon Features:
+
+This is just cool:
 
 ```geojson
 {
@@ -67,6 +69,9 @@ Lets say for some reason we need only the latitude values for all coordinates fr
     ]
 }
 ```
+
+The GeoJSON:
+
 ```json
 {
     "type": "FeatureCollection",
