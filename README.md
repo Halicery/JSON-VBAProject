@@ -1,24 +1,25 @@
 # JSON-VBAProject
 
-VBA code written mainly to parse JSON API responses, query JSON data using JSON Path Expressions and return values into cells for Excel.
-
-It works with VBA Variants so this version is not for building and/or manipulating a JSON object tree. 
-
-### 
-
-JSON-VBAProject has 3 internal Private Modules and one Public frontend for Excel. This is to maintain some minimal encapsulation VBE provides. 
-
-The Public Module JSON4Excel contains some example wrapper UDF functions with error handling. 
+VBA code written mainly to parse JSON API responses, query JSON data using JSON Path Expressions and return JSON values into cells using UDF formulae in Excel.
 
 
+### The VBAProject
+
+The VBAProject has 3 internal Private Modules and one Public frontend for Excel. This is to maintain some minimal encapsulation VBA provides. 
+
+The Public Module JSON4Excel contains some wrapper UDF functions with error handling to be used as Excel formulae:
+
+- JSON4Excel.bas
 
 The three Private Modules are standalone and written intentionally in pure VBA independent of Excel. These are not exposed outside of the VBA Project: 
 
-- JSONPARSE - parse JSON TEXT and store result in a VBA Variant
-- JSONPATH - query VBA Variant using JSON Path Expression Syntax
-- JSONGEN - generates JSON TEXT from VBA Variant
+- JSONPARSE.BAS - parse JSON TEXT and store result in a VBA Variant
+- JSONPATH.BAS - query VBA Variant using JSON Path Expression Syntax
+- JSONGEN.BAS - generates JSON TEXT from VBA Variant
 
 The Project references Scripting.Dictionary. 
+
+It is not possible to distribute separately a VBA Project so simply import the 4 Modules in a fresh Excel. 
 
 
 ### Parsing 
@@ -34,7 +35,7 @@ Conversion is rather straightforward and the implementation conforms most with I
 
 ### JSON Path Expression Syntax
 
-The Path Expression syntax supports basic dot-notation, Syntax Relaxation with automatic wrapping and unwrapping and is based on Oracle SQL/JSON Path Expression syntax. There is also strict mode that raises more errors, idea taken from MS SQL SQL/JSON syntax.
+The Path Expression syntax supports basic dot-notation, Syntax Relaxation with automatic wrapping and unwrapping and is based on Oracle SQL/JSON Path Expression syntax. There is also strict mode that raises more errors, idea taken from MS SQL JSON syntax.
 
 Not implemented yet:
 
@@ -43,7 +44,7 @@ Not implemented yet:
 
 ### Example JSON query
 
-A JSON TEXT (source: json.org):
+Cell A1 contains this JSON string (source: json.org):
 
 ```json
 {"menu": {
@@ -58,26 +59,43 @@ A JSON TEXT (source: json.org):
   }
 }}
 ```
-Sheet A1 contains the above string. To query for the last two "onclick" property in reverse order from the array of objects of menuitem, enter this this formula in A2: 
 
-```vba
-=json_parse_and_get_value(A1,"$.menu.popup.menuitem[last to last-1].onclick")
-or
-=json_parse_and_get_value(A1,"$.menu.popup.*[last to last-1].onclick")
-```
+Get the value of the `"id"` property:
+| Formula  | `=json_parse_and_get_value(A1,"$.menu.id")`  |
+|-|-|
+| Cell value | file  |
 
-The formula return this value into A2: 
+Query for multiple values and use array-formula (or a simple formula with new spilling support in Excel):
 
-```
-["CloseDoc()","OpenDoc()"]
-```
+<table>
+<thead>
+<tr>
+<th>Array formula</th>
+<th colspan="2"> <code> {=json_parse_and_get_values(A1,"$.menu.id","$.menu.value")} </code> </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cell values</td>
+<td>file</td>
+<td>File</td>
+</tr>
+</tbody>
+</table>
+
+Query for the last two "onclick" property in reverse order from the array of objects of menuitem: 
+
+| Formula  | `=json_parse_and_get_value(A1,"$.menu.popup.menuitem[last to last-1].onclick")`  |
+|-|-|
+| Cell value | ["CloseDoc()","OpenDoc()"]  |
+
+
+
 
 
 ### GeoJSON Example
 
 Lets say for some reason we need only the latitude values (the second element) from all coordinates of a Polygon Feature. The following GeoJSON FeatureCollection defines two Polygon Features:
-
-This is just cool:
 
 ```geojson
 {
@@ -89,7 +107,7 @@ This is just cool:
 }
 ```
 
-The GeoJSON (source: OpenLayers.org):
+The GeoJSON (source: https://openlayers.org/):
 
 ```json
 {
@@ -105,13 +123,7 @@ The GeoJSON (source: OpenLayers.org):
 
 The following formula returns an array of latitude values from the last Feature's first linear ring, omitting the last latitude value - which is the same as the first by Standard (see RFC 7946): 
 
-```vba
-=json_parse_and_get_value(A1,"$.features[last].geometry.coordinates[0][0..last-1][1]")
-```
-
-The formula returns: 
-
-```
-[65.0390625,34.8046875,25.6640625,17.2265625,58.0078125]
-```
+| Formula  | `=json_parse_and_get_value(A1,"$.features[last].geometry.coordinates[0][0..last-1][1]")`  |
+|-|-|
+| Cell value | [65.0390625,34.8046875,25.6640625,17.2265625,58.0078125] |
 
