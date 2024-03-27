@@ -1,8 +1,10 @@
+# About JSON Path Expression and Syntax Relaxation 
+
 ## Unwrapping 
 
 Unwrapping means evaluate the Path Expression for each previous result and return a possible array. 
 
-### Array unwrapping
+## Array unwrapping
 
 Especially to handle 2D arrays. Consider an array of arrays:  
 
@@ -17,8 +19,9 @@ This is because `[*]` is not the same array as the original in structure.
 
 It is implemented by unwrapped arrays. 
 
-[\*] and [multi-index] array specification might return such unwrapped arrays, which can have different meaning in different contexts. 
-$[\*] --> [ [1,2], [3,4], [5,6] ], here it is no difference. 
+[\*] and [multi-index] array specification might return such unwrapped arrays, which can have different meaning in different contexts: 
+
+	$[*] --> [ [1,2], [3,4], [5,6] ]    here no difference
 
 In unwrapped form the same array looks like this: 
 
@@ -27,7 +30,7 @@ In unwrapped form the same array looks like this:
 	        [5,6]
 
 
-### [*] transposes the array vector
+***[\*] transposes the array vector***
 
 So the $[*][0] operation will be:
         
@@ -66,6 +69,7 @@ This type of Syntax Relaxation means that [*] can be inserted or can be ommitted
 
 	$.name  <-- -->  $[*].name
 
+### Unwrapping 
 
 The implementation for unwrapping uses transposed arrays and for each: 
 
@@ -75,4 +79,23 @@ The implementation for unwrapping uses transposed arrays and for each:
 	
 	    { "name":"n1" }            { "name":"n1" }.name       "n1"     
 	= [ { "name":"n2" } ].name = [ { "name":"n2" }.name ] = [ "n2" ] = [ "n1", "n2","n3" ]
-	    { "name":"n3" }            { "name":"n3" }.name       "n3"     
+	    { "name":"n3" }            { "name":"n3" }.name       "n3"    
+
+### Wrapping 
+
+The implementation for wrapping is fairly simple: 
+
+	{ "name":"n1" }  
+	                    
+	$[*].name = [ { "name":"n1" } ].name = [ { "name":"n1" }.name ] = [ "n1" ] = "n1"
+
+As any one-element array result is automatically unwrapped. 
+
+This is to be consistent with single array index Path Expression filtering, f. ex.:
+
+	[ { "name":"n1" }, { "name":"n2" }, { "name":"n3" } ]
+	
+	$[0].name = { "name":"n1" }.name = "n1"
+
+
+
