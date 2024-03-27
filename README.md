@@ -5,11 +5,18 @@ VBA code written mainly to parse JSON API responses, query JSON data using JSON 
 
 ### The VBAProject
 
+    VBAProject
+    |
+    +-- JSON4Excel
+    |
+    +-- Private 
+        +-- JSONPARSE
+        +-- JSONPATH
+        +-- JSONGEN
+    
 The VBAProject has 3 internal Private Modules and one Public frontend for Excel. This is to maintain some minimal encapsulation VBA provides. 
 
 The Public Module JSON4Excel contains some wrapper UDF functions with error handling to be used as Excel formulae:
-
-- JSON4Excel.bas
 
 The three Private Modules are standalone and written intentionally in pure VBA independent of Excel. These are not exposed outside of the VBA Project: 
 
