@@ -1,6 +1,6 @@
 # JSON-VBAProject
 
-VBA code written mainly to parse JSON API responses, query JSON data using JSON Path Expressions and return JSON values into cells using UDF formulae in Excel.
+VBA code written mainly to parse JSON API responses, query JSON data with JSON Path Expressions and return JSON values into cells using UDF formulae in Excel.
 
 
 ### The VBAProject
@@ -14,19 +14,19 @@ VBA code written mainly to parse JSON API responses, query JSON data using JSON 
         +-- JSONPATH
         +-- JSONGEN
     
-The VBAProject has 3 internal Private Modules and one Public frontend for Excel. This is to maintain some minimal encapsulation VBA provides. 
+VBAProject has 3 internal Private Modules and one Public frontend for Excel. This is to maintain some minimal encapsulation VBA provides. 
 
-The Public Module JSON4Excel contains some wrapper UDF functions with error handling to be used as Excel formulae:
+The Public Module JSON4Excel contains some wrapper UDF functions with error handling to be used as Excel formulae.
 
 The three Private Modules are standalone and written intentionally in pure VBA independent of Excel. These are not exposed outside of the VBA Project: 
 
-- JSONPARSE.BAS - parse JSON TEXT and store result in a VBA Variant
-- JSONPATH.BAS - query VBA Variant using JSON Path Expression Syntax
-- JSONGEN.BAS - generates JSON TEXT from VBA Variant
+- JSONPARSE.BAS - parses JSON TEXT and stores result in a *jsonvar* Variant
+- JSONPATH.BAS - query any *jsonvar* Variant using JSON Path Expression Syntax
+- JSONGEN.BAS - generates JSON TEXT from *jsonvar* Variant
 
 The Project references Scripting.Dictionary. 
 
-It is not possible to distribute separately a VBA Project so simply import the 4 Modules in a fresh Excel. 
+It is not possible to distribute separately a VBA Project so simply import these Modules in Excel. 
 
 
 ### Parsing 
