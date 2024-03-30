@@ -1,6 +1,27 @@
-# Parsing JSON TEXT
+# JSONPARSE.BAS
 
-Conversion is rather straightforward and the implementation conforms most with I-JSON RFC 7493:
+**`Public Sub json_parse(json_text As String, ByRef jsonvar_out As Variant)`**
+
+Takes a string and sets the Variant output parameter to the JSON value parsed (Let/Set problem of VBA). 
+
+## JSON value
+
+Conversion is rather straightforward:
+
+	number             --> translated to VBA Variant/Double
+	"string"           --> translated to VBA Variant/String
+	true/false literal --> translated to VBA Variant/Boolean
+	null literal       --> translated to VBA Variant/Null
+	[array]            --> translated to VBA Variant/Collection
+	{object}           --> translated to VBA Variant/Dictionary
+
+- [array] is a comma-separated list of JSON values - or empty []
+- {object} is a comma-separated list of name/value pairs - or empty {}
+
+
+## Parsing JSON TEXT
+
+This implementation conforms most with I-JSON RFC 7493:
 
 - top-Level: any JSON value
 - numbers: IEEE 754 double precision (as Excel stores numbers)
@@ -21,17 +42,7 @@ Whitespace characters:
 
 space (0020), horizontal tab (0009), line feed (000A) and carriage return (000D)
 
-## JSON value
 
-	number             --> translated to VBA Variant/Double
-	"string"           --> translated to VBA Variant/String
-	true/false literal --> translated to VBA Variant/Boolean
-	null literal       --> translated to VBA Variant/Null
-	[array]            --> translated to VBA Variant/Collection
-	{object}           --> translated to VBA Variant/Dictionary
-
-- [array] is a comma-separated list of JSON values - or empty []
-- {object} is a comma-separated list of name/value pairs - or empty {}
 
 
 ### JSON string type handling
@@ -61,7 +72,7 @@ The translation process for JSON string to VBA String:
 
 ## JSON number type handling
 
-JSONPARSE simply uses Double when parsing numbers conforming to I-JSON. Although 64-bit VBA can handle 64-bit integers using LongLong - Excel cannot. It stores all numbers as Double data type. Double has *only* 52 bits mantissa. When entering large numbers in a cell it will be truncated in a way that looses precision (i.e. keeps its magnitude but the last digits will be zeroes). This is possible because the exponent part of Double can be quite large. 
+JSONPARSE uses Double when parsing numbers conforming to I-JSON. Although 64-bit VBA could handle 64-bit integers using LongLong - Excel cannot. It stores all numbers as Double data type. Double has *only* 52 bits mantissa. When entering large numbers in a cell it will be truncated in a way that looses precision (i.e. keeps its magnitude but the last digits will be zeroes). This is possible because the exponent part of Double can be quite large. 
 
 
 
