@@ -1,7 +1,6 @@
 # JSON-VBAProject
 
-VBA code written mainly to parse JSON API responses, query JSON data with JSON Path Expressions and return JSON values into cells using UDF formulae in Excel.
-
+VBA code written mainly to parse JSON API responses, query JSON data with **JSON Path Expressions** and return JSON values into cells with UDF formulae in Excel.
 
 ### The VBAProject
 
@@ -9,36 +8,25 @@ VBA code written mainly to parse JSON API responses, query JSON data with JSON P
     |
     +-- JSON4Excel
     |
-    +-- Private 
+    +-- Private "Lib"
         +-- JSONPARSE
         +-- JSONPATH
         +-- JSONGEN
     
 VBAProject has 3 internal Private Modules and one Public frontend for Excel. This is to maintain some minimal encapsulation VBA provides. 
 
-The Public Module [JSON4Excel](JSON4Excel.md) contains some wrapper UDF functions with error handling to be used as Excel formulae.
+The three Private Modules, meant to be a VBA JSON Library, are standalone and written intentionally in pure VBA independent of Excel. These are not exposed outside of the VBA Project: 
 
-The three Private Modules are standalone and written intentionally in pure VBA independent of Excel. These are not exposed outside of the VBA Project: 
-
-- JSONPARSE.BAS - parses JSON TEXT and stores result in a *jsonvar* Variant
-- JSONPATH.BAS - query any *jsonvar* Variant using JSON Path Expression Syntax
+- [JSONPARSE](JSONPARSE.md)  - parses JSON TEXT and stores result in a *jsonvar* Variant
+- [JSONPATH](JSONPATH.md) - query any *jsonvar* Variant using JSON Path Expression Syntax
 - JSONGEN.BAS - generates JSON TEXT from *jsonvar* Variant
+
+The Public Module [JSON4Excel](JSON4Excel.md) contains a few wrapper UDF functions with error handling to be used in Excel formulae.
 
 The Project references Scripting.Dictionary. 
 
 It is not possible to distribute separately a VBA Project so simply import these Modules in Excel. 
 
-
-### Parsing 
-
-Conversion is rather straightforward and the implementation conforms most with I-JSON RFC 7493:
-
-- top-Level: any JSON value
-- numbers: IEEE 754 double precision (as Excel stores numbers)
-- names: SHOULD be unique
-- comparison: binary on unescaped strings
-- RECOMMENDED to encode 64-bit integers in JSON string values
-- RECOMMENDED that Time and Date data items be expressed as string values in ISO 8601 format
 
 ### JSON Path Expression Syntax
 
@@ -114,6 +102,12 @@ Lets say for some reason we need only the latitude values (the second element) f
 }
 ```
 
+The following formula returns an array of latitude values from the last Feature's first linear ring, omitting the last latitude value - which is the same as the first by Standard (see RFC 7946): 
+
+| Formula  | `=json_parse_and_get_value(A1,"$.features[last].geometry.coordinates[0][0..last-1][1]")`  |
+|-|-|
+| Cell value | [65.0390625,34.8046875,25.6640625,17.2265625,58.0078125] |
+
 The GeoJSON (source: https://openlayers.org/):
 
 ```json
@@ -128,9 +122,4 @@ The GeoJSON (source: https://openlayers.org/):
 }
 ```
 
-The following formula returns an array of latitude values from the last Feature's first linear ring, omitting the last latitude value - which is the same as the first by Standard (see RFC 7946): 
-
-| Formula  | `=json_parse_and_get_value(A1,"$.features[last].geometry.coordinates[0][0..last-1][1]")`  |
-|-|-|
-| Cell value | [65.0390625,34.8046875,25.6640625,17.2265625,58.0078125] |
 
