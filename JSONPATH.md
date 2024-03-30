@@ -12,7 +12,7 @@ Especially to handle 2D arrays. Consider an array of arrays:
 
 What should be the result of the Path Expression `$[*][0]`? 
 
-To be consistent in syntax, if `$[1][0] = 3` then `$[*][0]` should be the first element of each sub-arrays, i.e. `[1,3,5]` - and not [1,2]. 
+To be consistent in syntax, when `$[1][0] = 3` then `$[*][0]` should be the first element of each sub-arrays, i.e. `[1,3,5]` - and not [1,2]. 
 
 This is because `[*]` is not the same array as the original in structure. 
 
