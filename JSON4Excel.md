@@ -16,7 +16,7 @@ Takes a URL and returns HTTP responseText, the JSON TEXT in a cell.
 
 **`=json_parse_and_get_values(json_text, path, ...)`**
 
-Takes a JSON TEXT (from a cell or as a String parameter) and runs parse. Then runs each Path-expr parameter against the JSON value. Can be used to return one or multiple JSON value results. 
+Takes a JSON TEXT (from a cell or as a String parameter f. ex.) and runs parse. Then runs each Path-expr parameter against the JSON value. Can be used to return one or multiple JSON value results. 
 
 For multiple values use array formula or new spill support in Excel.
 
