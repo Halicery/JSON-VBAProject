@@ -19,7 +19,7 @@ The three Private Modules, meant to be a VBA JSON Library, are standalone and wr
 
 - [JSONPARSE](JSONPARSE.md)  - parses JSON TEXT and stores result in a *jsonvar* Variant
 - [JSONPATH](JSONPATH.md) - query any *jsonvar* Variant using JSON Path Expression Syntax
-- JSONGEN.BAS - generates JSON TEXT from *jsonvar* Variant
+- JSONGEN - generates JSON TEXT from *jsonvar* Variant
 
 The Public Module [JSON4Excel](JSON4Excel.md) contains a few wrapper UDF functions with error handling to be used in Excel formulae.
 
@@ -39,7 +39,7 @@ Not implemented yet:
 
 ### Example JSON query
 
-Cell A1 contains this JSON string (source: json.org):
+Cell A1 contains this JSON TEXT (source: json.org):
 
 ```json
 {"menu": {
