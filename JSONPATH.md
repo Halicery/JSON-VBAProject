@@ -156,7 +156,7 @@ idxrange        = idxval to|.. idxval
 
 Unwrapping means iteration: evaluate the Path Expression for each previous result and return a possible array. 
 
-## Array unwrapping
+### Array unwrapping
 
 Especially to handle 2D arrays. Consider an array of arrays:  
 
@@ -175,23 +175,20 @@ It is implemented by unwrapped arrays.
 
 	$[*] --> [ [1,2], [3,4], [5,6] ]    here no difference
 
-In unwrapped form the same array looks like this: 
+In unwrapped form the same array looks like this, ***[\*] transposes the array vector***: 
 
 	        [1,2]
-	[*] = [ [3,4] ]       and not [ [1,2], [3,4], [5,6] ] 
+	[*] = [ [3,4] ] 
 	        [5,6]
 
-
-***[\*] transposes the array vector***
-
-So the $[*][0] operation will be:
+And the $[*][0] operation will be:
         
 	            [1,2]          [1,2][0]       1        
 	$[*][0] = [ [3,4] ][0] = [ [3,4][0] ] = [ 3 ] = [1,3,5]
 	            [5,6]          [5,6][0]       5        
 
 
-### Syntax Relaxation - wrapping and unwrapping object example
+## Syntax Relaxation - wrapping and unwrapping object example
 
 To get the name property from this object the Path Expression would be `$.name` and the result is `"n1"`: 
 
@@ -221,9 +218,9 @@ This type of Syntax Relaxation means that [*] can be inserted or can be ommitted
 
 	$.name  <-- -->  $[*].name
 
-### Unwrapping 
+### Unwrapping implementation
 
-The implementation for unwrapping uses transposed arrays and for each: 
+The implementation for unwrapping uses transposed vectors and for each: 
 
 	[ { "name":"n1" }, { "name":"n2" }, { "name":"n3" } ]
 	
@@ -233,7 +230,7 @@ The implementation for unwrapping uses transposed arrays and for each:
 	= [ { "name":"n2" } ].name = [ { "name":"n2" }.name ] = [ "n2" ] = [ "n1", "n2","n3" ]
 	    { "name":"n3" }            { "name":"n3" }.name       "n3"    
 
-### Wrapping 
+### Wrapping implementation
 
 The implementation for wrapping is fairly simple: 
 
@@ -241,7 +238,7 @@ The implementation for wrapping is fairly simple:
 	                    
 	$[*].name = [ { "name":"n1" } ].name = [ { "name":"n1" }.name ] = [ "n1" ] = "n1"
 
-As any one-element array result is automatically unwrapped. 
+As any one-element array result is automatically unboxed. 
 
 This is to be consistent with single array index Path Expression filtering, f. ex.:
 
