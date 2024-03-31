@@ -88,7 +88,7 @@ Query for the last two "onclick" property in reverse order from the array of obj
 
 
 
-### GeoJSON Example
+### GeoJSON Example query
 
 Lets say for some reason we need only the latitude values (the second element) from all coordinates of a Polygon Feature. The following GeoJSON FeatureCollection defines two Polygon Features:
 
