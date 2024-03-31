@@ -1,8 +1,160 @@
-# About JSON Path Expression and Syntax Relaxation 
+# About JSON Path Expressions and Syntax Relaxation 
 
-## Unwrapping 
+JSONPATH supports:
 
-Unwrapping means evaluate the Path Expression for each previous result and return a possible array. 
+- basic Dot-notation syntax
+- array filtering
+- Syntax Relaxation between arrays and non-arrays
+- automatic wrapping and unwrapping
+
+
+## JSON Path Expressions 
+
+<details>
+<summary>An example JSON TEXT (source: docs.oracle.com)</summary>
+
+```json
+{ "PONumber"             : 1600,
+  "Reference"            : "ABULL-20140421",
+  "Requestor"            : "Alexis Bull",
+  "User"                 : "ABULL",
+  "CostCenter"           : "A50",
+  "ShippingInstructions" : { "name"   : "Alexis Bull",
+                             "Address": { "street"  : "200 Sporting Green",
+                                          "city"    : "South San Francisco",
+                                          "state"   : "CA",
+                                          "zipCode" : 99236,
+                                          "country" : "United States of America" },
+                             "Phone" : [ { "type"   : "Office", 
+                                           "number" : "909-555-7307" },
+                                         { "type"   : "Mobile",
+                                           "number" : "415-555-1234" } ] },
+  "Special Instructions" : null,
+  "AllowPartialShipment" : false,
+  "LineItems"            : [ { "ItemNumber" : 1,
+                               "Part"       : { "Description" : "One Magic Christmas",
+                                                "UnitPrice"   : 19.95,
+                                                "UPCCode"     : 13131092899 },
+                               "Quantity"   : 9.0 },
+                             { "ItemNumber" : 2,
+                               "Part"       : { "Description" : "Lethal Weapon",
+                                                "UnitPrice"   : 19.95,
+                                                "UPCCode"     : 85391628927 },
+                               "Quantity"   : 5.0 } ] }
+```
+</details>
+
+
+
+## The Dot-notation syntax
+
+The context item is represented by the dollar sign ($), which is the JSON TEXT itself in this case. Dot-notation consists of one or more field names separated by periods (.). The expression *walks* JSON objects by property names: 
+
+<details>
+<summary>Every dot-notation values</summary>
+
+```
+JSON DATA                              JSON PATH EXPRESSION
+
+object                                 $
+ `-- number                            $.PONumber
+ `-- string                            $.Reference
+ `-- string                            $.Requestor
+ `-- string                            $.User
+ `-- string                            $.CostCenter
+ `-- object                            $.ShippingInstructions
+ '    `-- string                       $.ShippingInstructions.name
+ '    `-- object                       $.ShippingInstructions.Address
+ '    '    `-- string                  $.ShippingInstructions.Address.street
+ '    '    `-- string                  $.ShippingInstructions.Address.city
+ '    '    `-- string                  $.ShippingInstructions.Address.state
+ '    '    `-- number                  $.ShippingInstructions.Address.zipCode
+ '    '    `-- string                  $.ShippingInstructions.Address.country
+ '    `-- array                        $.ShippingInstructions.Phone
+ `-- null                              $.Special Instructions
+ `-- false                             $.AllowPartialShipment
+ `-- array                             $.LineItems
+```
+</details>
+
+
+## Array indexes
+
+Extending Path Expression with array indices on arrays all JSON value has their unique path: 
+
+<details>
+<summary>Every absolute path values</summary>
+
+```
+JSON DATA                              JSON PATH EXPRESSION
+
+object                                 $
+ `-- number                            $.PONumber
+ `-- string                            $.Reference
+ `-- string                            $.Requestor
+ `-- string                            $.User
+ `-- string                            $.CostCenter
+ `-- object                            $.ShippingInstructions
+ '    `-- string                       $.ShippingInstructions.name
+ '    `-- object                       $.ShippingInstructions.Address
+ '    '    `-- string                  $.ShippingInstructions.Address.street
+ '    '    `-- string                  $.ShippingInstructions.Address.city
+ '    '    `-- string                  $.ShippingInstructions.Address.state
+ '    '    `-- number                  $.ShippingInstructions.Address.zipCode
+ '    '    `-- string                  $.ShippingInstructions.Address.country
+ '    `-- array                        $.ShippingInstructions.Phone
+ '         `-- object                  $.ShippingInstructions.Phone[0]
+ '         '    `-- string             $.ShippingInstructions.Phone[0].type
+ '         '    `-- string             $.ShippingInstructions.Phone[0].number
+ '         `-- object                  $.ShippingInstructions.Phone[1]
+ '              `-- string             $.ShippingInstructions.Phone[1].type
+ '              `-- string             $.ShippingInstructions.Phone[1].number
+ `-- null                              $.Special Instructions
+ `-- false                             $.AllowPartialShipment
+ `-- array                             $.LineItems
+      `-- object                       $.LineItems[0]
+      '    `-- number                  $.LineItems[0].ItemNumber
+      '    `-- object                  $.LineItems[0].Part
+      '    '    `-- string             $.LineItems[0].Part.Description
+      '    '    `-- number             $.LineItems[0].Part.UnitPrice
+      '    '    `-- number             $.LineItems[0].Part.UPCCode
+      '    `-- number                  $.LineItems[0].Quantity
+      `-- object                       $.LineItems[1]
+           `-- number                  $.LineItems[1].ItemNumber
+           `-- object                  $.LineItems[1].Part
+           '    `-- string             $.LineItems[1].Part.Description
+           '    `-- number             $.LineItems[1].Part.UnitPrice
+           '    `-- number             $.LineItems[1].Part.UPCCode
+           `-- number                  $.LineItems[1].Quantity
+
+```
+</details>
+
+
+These are basic and absolute path expressions, which return a single JSON value as it is stored in the JSON data.
+
+
+## Array filtering with Path Expressions
+
+The array step accepts more than only a single index value in brackets `[]` and it is called index-specifier. It can specify one or more array indices and can return multiple values in an array: 
+
+- asterisk (*) wildcard: represents all elements
+- index value returns a single element: 0, 5, last, last - 1
+- index ranges: 1 to 5 or 1..5 (supported only in JSONPATH)
+- a comma separated list of index values and index ranges
+
+```
+index-specifier = [*] | [idxval|idxrange (,...)]
+idxval          = number|last|last-number
+idxrange        = idxval to|.. idxval
+```
+
+
+
+
+## Automatic Unwrapping 
+
+Unwrapping means iteration: evaluate the Path Expression for each previous result and return a possible array. 
 
 ## Array unwrapping
 
