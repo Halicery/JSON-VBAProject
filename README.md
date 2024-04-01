@@ -17,8 +17,8 @@ VBAProject has 3 internal Private Modules and one Public frontend for Excel. Thi
 
 The three Private Modules, meant to be a VBA JSON Library, are standalone and written intentionally in pure VBA independent of Excel. These are not exposed outside of the VBA Project: 
 
-- [JSONPARSE](JSONPARSE.md)  - parses JSON TEXT and stores result in a *jsonvar* Variant
-- [JSONPATH](JSONPATH.md) - query any *jsonvar* Variant using JSON Path Expression Syntax
+- [JSONPARSE](JSONPARSE.md)  - parses JSON TEXT and stores the result in *jsonvar* Variant
+- [JSONPATH](JSONPATH.md) - to query any *jsonvar* Variant using JSON Path Expression Syntax
 - JSONGEN - generates JSON TEXT from *jsonvar* Variant
 
 The Public Module [JSON4Excel](JSON4Excel.md) contains a few wrapper UDF functions with error handling to be used in Excel formulae.
@@ -88,7 +88,7 @@ Query for the last two "onclick" property in reverse order from the array of obj
 
 
 
-### GeoJSON Example query
+### GeoJSON query Example 
 
 Lets say for some reason we need only the latitude values (the second element) from all coordinates of a Polygon Feature. The following GeoJSON FeatureCollection defines two Polygon Features:
 
