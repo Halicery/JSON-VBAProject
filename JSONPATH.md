@@ -1,8 +1,8 @@
-# About JSON Path Expressions and Syntax Relaxation 
+# JSONPATH.BAS
 
 JSONPATH supports:
 
-- basic Dot-notation syntax
+- basic dot-notation syntax
 - array filtering
 - Syntax Relaxation between arrays and non-arrays
 - automatic wrapping and unwrapping
@@ -46,12 +46,17 @@ JSONPATH supports:
 
 
 
-## The Dot-notation syntax
+### The Dot-notation syntax
 
-The context item is represented by the dollar sign ($), which is the JSON TEXT itself in this case. Dot-notation consists of one or more field names separated by periods (.). The expression *walks* JSON objects by property names: 
+The context item is represented by the dollar sign ($), which is the JSON TEXT itself in this case. Dot-notation consists of one or more field names separated by periods (.). The expression *walks* JSON objects along property names. The result of the expression is either: 
+
+- another JSON object
+- JSON array value
+- JSON scalar value (string, number or literal)
+
 
 <details>
-<summary>Every dot-notation values</summary>
+<summary>Every dot-notation expressions</summary>
 
 ```
 JSON DATA                              JSON PATH EXPRESSION
@@ -78,9 +83,12 @@ object                                 $
 </details>
 
 
-## Array indexes
+### Array indexes
 
-Extending Path Expression with array indices on arrays all JSON value has their unique path: 
+Extending Path Expression with array indices on arrays every JSON value will have a unique path. The basic Path Expression syntax thus consist of: 
+
+- object-step on objects yields the named member value
+- array-step on arrays yields the n<sup>th</sup> array member value 
 
 <details>
 <summary>Every absolute path values</summary>
@@ -134,13 +142,33 @@ object                                 $
 These are basic and absolute path expressions, which return a single JSON value as it is stored in the JSON data.
 
 
-## Array filtering with Path Expressions
+## Syntax Relaxation
+
+In the relaxed syntax form the purpose of the JSON Path Expression is extended beyond returning a single JSON value. 
+
+It is a matching process: a JSON value ($) is matched against a Path Expression, which can yield: 
+
+- a single JSON value
+- multiple JSON values
+- no value, empty (i.e. no match is found)
+
+It is also involves:
+
+- array filtering
+- unwrapping: to allow object-step on non-objects
+- wrapping: to allow array-step on non-arrays
+- empty array [] or empty object {} returns empty value
+- unboxing: array with one element returns the element itself
+
+The last two is debatable. 
+
+### Array filtering with Path Expressions
 
 The array step accepts more than only a single index value in brackets `[]` and it is called index-specifier. It can specify one or more array indices and can return multiple values in an array: 
 
 - asterisk (*) wildcard: represents all elements
 - index value returns a single element: 0, 5, last, last - 1
-- index ranges: 1 to 5 or 1..5 (supported only in JSONPATH)
+- index ranges: 1 to 5 or 1..5 (the `..` form is supported only in JSONPATH)
 - a comma separated list of index values and index ranges
 
 ```
@@ -149,14 +177,13 @@ idxval          = number|last|last-number
 idxrange        = idxval to|.. idxval
 ```
 
+In the relaxed syntax form an index value out of range is simply no-match and the result is empty. 
 
+### The unwrapping 
 
+Unwrapping means iteration: to evaluate the Path Expression for each previous result. It can happen in the relaxed syntax form, when the previous result is an array - but the expression expects a single value. It is an automatic process, which can yield multiple results in an array. 
 
-## Automatic Unwrapping 
-
-Unwrapping means iteration: evaluate the Path Expression for each previous result and return a possible array. 
-
-### Array unwrapping
+In addition, JSONPATH implements unwrapping on consecutive array steps as well. 
 
 Especially to handle 2D arrays. Consider an array of arrays:  
 
@@ -166,16 +193,11 @@ What should be the result of the Path Expression `$[*][0]`?
 
 To be consistent in syntax, when `$[1][0] = 3` then `$[*][0]` should be the first element of each sub-arrays, i.e. `[1,3,5]` - and not [1,2]. 
 
-This is because `[*]` is not the same array as the original in structure. 
-
+This is because `[*]`, or any other multi-index specifier makes a selection and returns the result in an array that is different in structure. 
 
 It is implemented by unwrapped arrays. 
 
-[\*] and [multi-index] array specification might return such unwrapped arrays, which can have different meaning in different contexts: 
-
-	$[*] --> [ [1,2], [3,4], [5,6] ]    here no difference
-
-In unwrapped form the same array looks like this, ***[\*] transposes the array vector***: 
+In unwrapped form the array looks like this internally, ***a transposed vector***: 
 
 	        [1,2]
 	[*] = [ [3,4] ] 
@@ -187,8 +209,14 @@ And the $[*][0] operation will be:
 	$[*][0] = [ [3,4] ][0] = [ [3,4][0] ] = [ 3 ] = [1,3,5]
 	            [5,6]          [5,6][0]       5        
 
+Note that if `[*]` is the last step there is no difference in result: 
 
-## Syntax Relaxation - wrapping and unwrapping object example
+	$[*] --> [ [1,2], [3,4], [5,6] ]   
+
+
+### Syntax Relaxation - wrapping and unwrapping object example
+
+The true purpose of Syntax Relaxation with wrapping/unwrapping is to allow JSON data to evolve, while using the same query Path Expressions without breaking code. 
 
 To get the name property from this object the Path Expression would be `$.name` and the result is `"n1"`: 
 
