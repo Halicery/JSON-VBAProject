@@ -90,8 +90,7 @@ Extending Path Expression with array indices on arrays every JSON value will hav
 - object-step on objects yields the named member value
 - array-step on arrays yields the n<sup>th</sup> array member value 
 
-<details>
-<summary>Every absolute path values</summary>
+Every absolute path values:
 
 ```
 JSON DATA                              JSON PATH EXPRESSION
@@ -136,7 +135,7 @@ object                                 $
            `-- number                  $.LineItems[1].Quantity
 
 ```
-</details>
+
 
 
 These are basic and absolute path expressions, which return a single JSON value as it is stored in the JSON data.
@@ -179,7 +178,7 @@ idxrange        = idxval to|.. idxval
 
 In the relaxed syntax form an index value out of range is simply no-match and the result is empty. 
 
-### The unwrapping 
+### Unwrapping 
 
 Unwrapping means iteration: to evaluate the Path Expression for each previous result. It can happen in the relaxed syntax form, when the previous result is an array - but the expression expects a single value. It is an automatic process, which can yield multiple results in an array. 
 
