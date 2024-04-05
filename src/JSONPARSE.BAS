@@ -78,7 +78,6 @@ Public Sub json_parse(json_text As String, ByRef jsonvar_out As Variant)
     If -1 <> json_ascw Then Err.Raise JERRPARSE, , "top-level value not single: there is more input", "json_parse()"
 End Sub
 
-
 ' json_error() meant to be called from an error handler
 ' Puts descriptive JSON error message into Err.Description and also returns the string (I hate #VALUE!)
 
@@ -272,7 +271,7 @@ Private Function read_json_number() As Double
     read_json_number = read_json_integer
     If ASCW_PERIOD = json_ascw Then ' fraction
         Dim start_pos As Long
-        start_pos = json_pos
+        start_pos = json_pos + 1
         nextChar
         read_json_number = read_json_number + read_json_integer * 10# ^ (start_pos - json_pos) ' just make sure call evaluated first. Seems ok.
     End If
